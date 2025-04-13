@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Birthday Surprise</title>
+    <style>
+        body {
+            background: #ffe6f2;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Dancing Script', cursive;
+            overflow: hidden;
+        }
+
+        .letter-container {
+            position: relative;
+            width: 350px;
+            height: 260px;
+            perspective: 1000px;
+        }
+
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-style: preserve-3d;
+        }
+
+        .envelope-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ff69b4;
+            clip-path: polygon(0 0, 100% 0, 50% 50%);
+            backface-visibility: hidden;
+            transform-origin: top;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .envelope-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ff85c8;
+            transform: translateZ(-1px);
+        }
+
+        .letter-content {
+            position: absolute;
+            width: 95%;
+            height: 100%;
+            background: white;
+            padding: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            transform: translateY(100%);
+            transition: all 0.8s 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            opacity: 0;
+        }
+
+        .open .envelope-front {
+            transform: rotateX(180deg) translateY(-30%);
+        }
+
+        .open .letter-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .open-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            background: white;
+            color: #ff69b4;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.5); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .message {
+            text-align: center;
+            color: #333;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        h1 {
+            color: #ff69b4;
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        p {
+            font-size: 1.rem;
+            line-height: 1.4;
+            margin-bottom: 0.8rem;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            animation: confetti 3s linear;
+            z-index: 3;
+        }
+
+        @keyframes confetti {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .letter-container {
+                width: 320px;
+                height: 220px;
+            }
+            
+            .open-button {
+                font-size: 1rem;
+                padding: 10px 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="letter-container">
+        <button class="open-button" onclick="openLetter()">Open Me! 🎀</button>
+        <div class="envelope">
+            <div class="envelope-front"></div>
+            <div class="envelope-back"></div>
+            <div class="letter-content">
+                <div class="message">
+                    <h1>Happy Birthday! 🌸</h1>
+                    <p>Dear [Name],</p>
+                    <p>Wishing you a day filled with happiness and a year filled with joy!</p>
+                    <p>With love,<br>[Your Name]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="birthdayAudio" src="https://assets.mixkit.co/music/preview/mixkit-happy-birthday-to-you-138.mp3"></audio>
+
+    <script>
+        function openLetter() {
+            const envelope = document.querySelector('.envelope');
+            const button = document.querySelector('.open-button');
+            const audio = document.getElementById('birthdayAudio');
+            
+            // Remove the button immediately
+            button.remove();
+            
+            // Open the letter
+            envelope.classList.add('open');
+            
+            // Play birthday song
+            audio.play();
+            
+            // Create confetti
+            for(let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 3000);
+            }
+
+            // Add floating hearts
+            const hearts = ['💖', '💗', '💓', '💞', '💕'];
+            for(let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.style.position = 'absolute';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animation = `float ${2 + Math.random() * 3}s ease-in-out`;
+                heart.style.fontSize = `${Math.random() * 15 + 15}px`;
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                document.body.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 3000);
+            }
+        }
+
+        // Add floating animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0% { transform: translateY(100vh) rotate(0deg); }
+                100% { transform: translateY(-100vh) rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
